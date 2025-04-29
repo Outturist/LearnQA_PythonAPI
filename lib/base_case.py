@@ -1,5 +1,9 @@
+import string
+import random
 from requests import Response
 import json.decoder
+
+
 class BaseCase:
     # метод для получения значений cookie из ответов сервера по имени.
     def get_cookie(self, response: Response, cookie_name):
@@ -22,3 +26,8 @@ class BaseCase:
         assert name in response_as_dict, f"Response JSON doesn't have key {name}"
 
         return response_as_dict[name]
+
+    def generate_random_string(self, length):
+        letters = string.ascii_lowercase
+        return ''.join(random.choice(letters) for _ in range(length))
+
