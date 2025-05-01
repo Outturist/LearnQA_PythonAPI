@@ -59,7 +59,7 @@ class TestUserEdit(BaseCase):
             'Wrong name of the user after edit'
         )
 
-    def test_edit_user_without_login(self):
+    def test_negative_edit_user_without_login(self):
         new_name = 'Changed Name'
         existed_user_id = 121887
         expired_token = '3a1f368b5b1e90527f1608319d6f136f7bf5596ef7494cf0fa365afac9a5314e'
@@ -76,7 +76,7 @@ class TestUserEdit(BaseCase):
         Assertions.assert_code_status(response_edit, 400)
         Assertions.assert_json_value_by_name(response_edit, "error", "Auth token not supplied", "Wasn't get error 'Auth token not supplied'")
 
-    def test_edit_user_with_authorization_from_another_one(self):
+    def test_negative_edit_user_with_authorization_from_another_one(self):
         # LOGIN
         url_login = '/user/login'
         data_login = {
@@ -103,7 +103,7 @@ class TestUserEdit(BaseCase):
         Assertions.assert_code_status(response_edit, 400)
         Assertions.assert_json_value_by_name(response_edit, "error", "This user can only edit their own data.", "Wasn't get error 'This user can only edit their own data.'")
 
-    def test_edit_user_with_email_without_at_sign(self):
+    def test_negative_edit_user_with_email_without_at_sign(self):
         # LOGIN
         url_login = '/user/login'
         data_login = {
@@ -131,7 +131,7 @@ class TestUserEdit(BaseCase):
         Assertions.assert_json_value_by_name(response_edit, "error", "Invalid email format",
                                              "Wasn't get error 'Invalid email format'")
 
-    def test_edit_user_with_short_first_name(self):
+    def test_negative_edit_user_with_short_first_name(self):
         # LOGIN
         url_login = '/user/login'
         data_login = {
