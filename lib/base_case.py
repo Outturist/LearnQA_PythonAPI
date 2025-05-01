@@ -31,3 +31,16 @@ class BaseCase:
         letters = string.ascii_lowercase
         return ''.join(random.choice(letters) for _ in range(length))
 
+    def generate_registration_data(self, email=None, length_of_random_part_of_email: int = 5):
+        if email is None:
+            base_part = 'learnqa'
+            domain = 'example.com'
+            random_part = self.generate_random_string(length_of_random_part_of_email)
+            email = f"{base_part}{random_part}@{domain}"
+        return {
+            'password': '123',
+            'username': 'lernqa',
+            'firstName': 'lernqa',
+            'lastName': 'lernqa',
+            'email': email
+        }
