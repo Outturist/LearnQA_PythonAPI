@@ -74,7 +74,7 @@ class TestUserEdit(BaseCase):
         )
 
         Assertions.assert_code_status(response_edit, 400)
-        Assertions.assert_json_value_by_name(response_edit, "error", "Auth token not supplied", "Wasn't get error 'Auth token not supplied'")
+        Assertions.assert_json_value_by_name(response_edit, "error", "Auth token not supplied", "Wasn't got error 'Auth token not supplied'")
 
     def test_negative_edit_user_with_authorization_from_another_one(self):
         # LOGIN
@@ -101,7 +101,7 @@ class TestUserEdit(BaseCase):
         )
 
         Assertions.assert_code_status(response_edit, 400)
-        Assertions.assert_json_value_by_name(response_edit, "error", "This user can only edit their own data.", "Wasn't get error 'This user can only edit their own data.'")
+        Assertions.assert_json_value_by_name(response_edit, "error", "This user can only edit their own data.", "Wasn't got error 'This user can only edit their own data.'")
 
     def test_negative_edit_user_with_email_without_at_sign(self):
         # LOGIN
@@ -129,7 +129,7 @@ class TestUserEdit(BaseCase):
 
         Assertions.assert_code_status(response_edit, 400)
         Assertions.assert_json_value_by_name(response_edit, "error", "Invalid email format",
-                                             "Wasn't get error 'Invalid email format'")
+                                             "Wasn't got error 'Invalid email format'")
 
     def test_negative_edit_user_with_short_first_name(self):
         # LOGIN
@@ -157,4 +157,4 @@ class TestUserEdit(BaseCase):
 
         Assertions.assert_code_status(response_edit, 400)
         Assertions.assert_json_value_by_name(response_edit, "error", "The value for field `firstName` is too short",
-                                             "Wasn't get error 'The value for field `firstName` is too short'")
+                                             "Wasn't got error 'The value for field `firstName` is too short'")

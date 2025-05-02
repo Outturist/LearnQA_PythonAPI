@@ -5,6 +5,7 @@ from lib.assertions import Assertions
 
 class TestUserDelete(BaseCase):
     def test_negative_delete_default_user(self):
+        # LOGIN
         url_login = '/user/login'
         data_login = {
             'email': 'vinkotov@example.com',
@@ -30,8 +31,7 @@ class TestUserDelete(BaseCase):
         Assertions.assert_json_has_key(response_delete, "error")
         Assertions.assert_json_value_by_name(response_delete, "error",
                                              "Please, do not delete test users with ID 1, 2, 3, 4 or 5.",
-                                             "Wasn't get error 'Please, do not delete test users with ID 1, 2, 3, 4 or 5.'")
-
+                                             "Wasn't got error 'Please, do not delete test users with ID 1, 2, 3, 4 or 5.'")
 
     def test_delete_just_created_user(self):
         # CREATE_USER (register)
@@ -71,7 +71,7 @@ class TestUserDelete(BaseCase):
 
         Assertions.assert_code_status(response_delete, 200)
         Assertions.assert_json_has_key(response_delete, "success")
-        Assertions.assert_json_value_by_name(response_delete, "success", "!", "Wasn't get success message '!'")
+        Assertions.assert_json_value_by_name(response_delete, "success", "!", "Wasn't got success message '!'")
 
         # GET
         url_get = f'https://playground.learnqa.ru/api/user/{user_id}'
@@ -82,4 +82,45 @@ class TestUserDelete(BaseCase):
         )
 
         Assertions.assert_code_status(response_get_deleted_user, 404)
-        Assertions.assert_text(response_get_deleted_user, 'User not found', "Wasn't get error 'User not found'")
+        Assertions.assert_text(response_get_deleted_user, 'User not found', "Wasn't got error 'User not found'")
+
+    def test_delete_user_with_authorization_from_another_one(self):
+        # CREATE_USER (register)
+        url_create = "/user/"
+        data = self.generate_registration_data()
+
+        response = MyRequests.post(url_create, data=data)
+
+        Assertions.assert_code_status(response, 200)
+        Assertions.assert_json_has_key(response, "id")
+
+        email = data["email"]
+        password = data["password"]
+
+        # LOGIN
+        url_login = '/user/login'
+        data_login = {
+            'email': email,
+            'password': password
+        }
+
+        response_login = MyRequests.post(url_login, data=data_login)
+
+        auth_sid = self.get_cookie(response_login, 'auth_sid')
+        token = self.get_header(response_login, 'x-csrf-token')
+
+        # DELETE
+        existed_user_id = 121887
+        url_delete = f'https://playground.learnqa.ru/api/user/{existed_user_id}'
+
+        response_delete = requests.delete(
+            url_delete,
+            headers={'x-csrf-token': token},
+            cookies={'auth_sid': auth_sid},
+        )
+
+        Assertions.assert_code_status(response_delete, 400)
+        Assertions.assert_json_has_key(response_delete, "error")
+        Assertions.assert_json_value_by_name(response_delete, "error",
+                                             "This user can only delete their own account.",
+                                             "Wasn't got error This user can only delete their own account.'")
