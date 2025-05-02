@@ -19,9 +19,9 @@ class TestUserDelete(BaseCase):
         user_id = self.get_json_value(response_login, "user_id")
 
         # DELETE
-        url_delete = f'https://playground.learnqa.ru/api/user/{user_id}'
+        url_delete = f'/user/{user_id}'
 
-        response_delete = requests.delete(
+        response_delete = MyRequests.delete(
             url_delete,
             headers={'x-csrf-token': token},
             cookies={'auth_sid': auth_sid},
@@ -61,9 +61,9 @@ class TestUserDelete(BaseCase):
         token = self.get_header(response_login, 'x-csrf-token')
 
         # DELETE
-        url_delete = f'https://playground.learnqa.ru/api/user/{user_id}'
+        url_delete = f'/user/{user_id}'
 
-        response_delete = requests.delete(
+        response_delete = MyRequests.delete(
             url_delete,
             headers={'x-csrf-token': token},
             cookies={'auth_sid': auth_sid},
@@ -74,8 +74,8 @@ class TestUserDelete(BaseCase):
         Assertions.assert_json_value_by_name(response_delete, "success", "!", "Wasn't got success message '!'")
 
         # GET
-        url_get = f'https://playground.learnqa.ru/api/user/{user_id}'
-        response_get_deleted_user = requests.get(
+        url_get = f'/user/{user_id}'
+        response_get_deleted_user = MyRequests.get(
             url_get,
             headers={'x-csrf-token': token},
             cookies={'auth_sid': auth_sid}
@@ -111,9 +111,9 @@ class TestUserDelete(BaseCase):
 
         # DELETE
         existed_user_id = 121887
-        url_delete = f'https://playground.learnqa.ru/api/user/{existed_user_id}'
+        url_delete = f'/user/{existed_user_id}'
 
-        response_delete = requests.delete(
+        response_delete = MyRequests.delete(
             url_delete,
             headers={'x-csrf-token': token},
             cookies={'auth_sid': auth_sid},

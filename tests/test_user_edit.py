@@ -1,10 +1,16 @@
+import allure
 import requests
 from lib.assertions import Assertions
 from lib.base_case import BaseCase
 from lib.my_requests import MyRequests
 
 
+@allure.epic("Edit user cases")
 class TestUserEdit(BaseCase):
+    @allure.tag("API", "EDIT")
+    @allure.description("This test checks edit users 'firstName'")
+    @allure.severity("normal")
+    @allure.link('https://playground.learnqa.ru/api/map', None, 'Link to method description')
     def test_edit_just_created_user(self):
         # CREATE_USER (register)
         url_create = "/user/"
@@ -59,6 +65,10 @@ class TestUserEdit(BaseCase):
             'Wrong name of the user after edit'
         )
 
+    @allure.tag("API", "EDIT")
+    @allure.description("This negative test checks edit user without login")
+    @allure.severity("critical")
+    @allure.link('https://playground.learnqa.ru/api/map', None, 'Link to method description')
     def test_negative_edit_user_without_login(self):
         new_name = 'Changed Name'
         existed_user_id = 121887
@@ -74,8 +84,13 @@ class TestUserEdit(BaseCase):
         )
 
         Assertions.assert_code_status(response_edit, 400)
-        Assertions.assert_json_value_by_name(response_edit, "error", "Auth token not supplied", "Wasn't got error 'Auth token not supplied'")
+        Assertions.assert_json_value_by_name(response_edit, "error", "Auth token not supplied",
+                                             "Wasn't got error 'Auth token not supplied'")
 
+    @allure.tag("API", "EDIT")
+    @allure.description("This negative test checks edit user with authorization from another user")
+    @allure.severity("critical")
+    @allure.link('https://playground.learnqa.ru/api/map', None, 'Link to method description')
     def test_negative_edit_user_with_authorization_from_another_one(self):
         # LOGIN
         url_login = '/user/login'
@@ -92,8 +107,8 @@ class TestUserEdit(BaseCase):
         # EDIT
         new_name = 'Changed Name'
         existed_user_id = 121887
-        url_edit = f'https://playground.learnqa.ru/api/user/{existed_user_id}'
-        response_edit = requests.put(
+        url_edit = f'/user/{existed_user_id}'
+        response_edit = MyRequests.put(
             url_edit,
             headers={'x-csrf-token': token},
             cookies={'auth_sid': auth_sid},
@@ -101,8 +116,13 @@ class TestUserEdit(BaseCase):
         )
 
         Assertions.assert_code_status(response_edit, 400)
-        Assertions.assert_json_value_by_name(response_edit, "error", "This user can only edit their own data.", "Wasn't got error 'This user can only edit their own data.'")
+        Assertions.assert_json_value_by_name(response_edit, "error", "This user can only edit their own data.",
+                                             "Wasn't got error 'This user can only edit their own data.'")
 
+    @allure.tag("API", "EDIT")
+    @allure.description("This negative test checks edit user with email without @ sign")
+    @allure.severity("normal")
+    @allure.link('https://playground.learnqa.ru/api/map', None, 'Link to method description')
     def test_negative_edit_user_with_email_without_at_sign(self):
         # LOGIN
         url_login = '/user/login'
@@ -119,8 +139,8 @@ class TestUserEdit(BaseCase):
 
         # EDIT
         new_email_without_at_sign = 'test_userexample.com'
-        url_edit = f'https://playground.learnqa.ru/api/user/{user}'
-        response_edit = requests.put(
+        url_edit = f'/user/{user}'
+        response_edit = MyRequests.put(
             url_edit,
             headers={'x-csrf-token': token},
             cookies={'auth_sid': auth_sid},
@@ -131,6 +151,10 @@ class TestUserEdit(BaseCase):
         Assertions.assert_json_value_by_name(response_edit, "error", "Invalid email format",
                                              "Wasn't got error 'Invalid email format'")
 
+    @allure.tag("API", "EDIT")
+    @allure.description("This negative test checks edit user with one symbol in first name")
+    @allure.severity("normal")
+    @allure.link('https://playground.learnqa.ru/api/map', None, 'Link to method description')
     def test_negative_edit_user_with_short_first_name(self):
         # LOGIN
         url_login = '/user/login'
@@ -147,8 +171,8 @@ class TestUserEdit(BaseCase):
 
         # EDIT
         new_short_first_name = self.generate_random_string(1)
-        url_edit = f'https://playground.learnqa.ru/api/user/{user}'
-        response_edit = requests.put(
+        url_edit = f'/user/{user}'
+        response_edit = MyRequests.put(
             url_edit,
             headers={'x-csrf-token': token},
             cookies={'auth_sid': auth_sid},
